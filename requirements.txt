@@ -1,0 +1,9 @@
+streamlit
+opencv-python
+numpy
+pyaudio
+wave
+torch
+librosa
+deepface
+transformers
