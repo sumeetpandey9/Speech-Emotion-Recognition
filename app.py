@@ -18,10 +18,11 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
 CHUNK = 1024
-RECORD_SECONDS = 10
+RECORD_SECONDS = 5
 AUDIO_FILENAME = "output.wav"
 
 # Streamlit UI
+st.set_page_config(page_title="Speech & Emotion Recognition", layout="centered")
 st.title("🔥 Speech and Emotion Recognition System 🔥")
 st.markdown("---")
 
@@ -78,6 +79,7 @@ with tab1:
     if start_emotion:
         cap = cv2.VideoCapture(0)
         frame_placeholder = st.empty()
+        emotion_placeholder = st.empty()
         stop_flag = False
         
         while not stop_flag:
@@ -86,9 +88,19 @@ with tab1:
                 break
             
             emotion = recognize_emotion(frame)
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame_placeholder.image(frame, caption=f"**Emotion: {emotion}**", use_container_width=True)
-            
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame_placeholder.image(frame_rgb, use_container_width=True)
+
+            # Styled emotion text
+            emotion_html = f"""
+                <div style='text-align: center; padding: 10px;'>
+                    <span style='font-size: 32px; font-weight: bold; color: #FF4B4B;'>
+                        Emotion Detected: {emotion.upper()}
+                    </span>
+                </div>
+            """
+            emotion_placeholder.markdown(emotion_html, unsafe_allow_html=True)
+
             if stop_emotion:
                 stop_flag = True
                 break
@@ -105,8 +117,8 @@ with tab2:
         record_audio()
         speech_text = recognize_speech(AUDIO_FILENAME)
         st.subheader("✅ Recognized Speech")
-        st.write(f"**{speech_text}**")
+        st.markdown(f"<p style='font-size:22px; color:#1F618D;'><b>{speech_text}</b></p>", unsafe_allow_html=True)
 
 # Footer
 st.markdown("---")
-st.markdown("<h4 style='text-align: center;'>Made by Sumeet Pandey & Team with love ❤️</h4>", unsafe_allow_html=True)
+st.markdown("<h4 style='text-align: center;'>Made by <span style='color:#FF5733;'>Sumeet Pandey</span> ❤️</h4>", unsafe_allow_html=True)
